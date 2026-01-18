@@ -1,0 +1,120 @@
+---
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="footer-container">
+    <div class="footer-brand">
+      <span class="footer-logo">🔥 Hot Baked Apps</span>
+      <p class="footer-tagline">Freshly coded mobile experiences.</p>
+    </div>
+    
+    <div class="footer-links">
+      <div class="footer-section">
+        <h4>Legal</h4>
+        <a href="/privacy/studio">Privacy Policy</a>
+        <a href="/terms/studio">Terms of Service</a>
+      </div>
+      <div class="footer-section">
+        <h4>Connect</h4>
+        <a href="/support">Support</a>
+        <a href="mailto:support@hotbakedapps.com">Contact</a>
+      </div>
+    </div>
+  </div>
+  
+  <div class="footer-bottom">
+    <p>&copy; {currentYear} Hot Baked Apps. All rights reserved.</p>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    background: linear-gradient(180deg, transparent 0%, rgba(245, 158, 11, 0.03) 100%);
+    border-top: 1px solid rgba(245, 158, 11, 0.1);
+    padding: 4rem 2rem 2rem;
+    margin-top: auto;
+  }
+
+  .footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    gap: 3rem;
+    flex-wrap: wrap;
+  }
+
+  .footer-brand {
+    max-width: 300px;
+  }
+
+  .footer-logo {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-text);
+  }
+
+  .footer-tagline {
+    color: var(--color-text-muted);
+    margin-top: 0.75rem;
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 4rem;
+  }
+
+  .footer-section h4 {
+    color: var(--color-text);
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 1rem;
+  }
+
+  .footer-section a {
+    display: block;
+    color: var(--color-text-muted);
+    text-decoration: none;
+    font-size: 0.9rem;
+    padding: 0.4rem 0;
+    transition: color 0.2s ease;
+  }
+
+  .footer-section a:hover {
+    color: var(--color-accent);
+  }
+
+  .footer-bottom {
+    max-width: 1200px;
+    margin: 3rem auto 0;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    text-align: center;
+  }
+
+  .footer-bottom p {
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
+    opacity: 0.7;
+  }
+
+  @media (max-width: 640px) {
+    .footer {
+      padding: 3rem 1.5rem 1.5rem;
+    }
+
+    .footer-container {
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .footer-links {
+      gap: 2rem;
+    }
+  }
+</style>

@@ -1,0 +1,242 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import apps from '../../data/apps.json';
+
+export function getStaticPaths() {
+  // Generate pages for each app plus a studio-wide policy
+  const appPaths = apps.map((app) => ({
+    params: { slug: app.slug },
+    props: { app }
+  }));
+  
+  // Add studio-wide privacy policy
+  appPaths.push({
+    params: { slug: 'studio' },
+    props: { 
+      app: {
+        name: 'Hot Baked Apps',
+        slug: 'studio',
+        tagline: 'Studio Privacy Policy',
+        description: '',
+        status: 'live',
+        appStoreUrl: null,
+        icon: '🔥',
+        releaseDate: null
+      }
+    }
+  });
+  
+  return appPaths;
+}
+
+const { app } = Astro.props;
+---
+
+<Layout 
+  title={`Privacy Policy - ${app.name} | Hot Baked Apps`}
+  description={`Privacy policy for ${app.name}. Learn how we handle your data.`}
+  canonicalPath={`/privacy/${app.slug}`}
+>
+  <article class="legal-page">
+    <div class="legal-container">
+      <header class="legal-header">
+        <span class="legal-icon">{app.icon}</span>
+        <h1>Privacy Policy</h1>
+        <p class="legal-app-name">{app.name}</p>
+        <p class="legal-date">Last Updated: January 2026</p>
+      </header>
+
+      <section class="legal-content">
+        <h2>Our Commitment to Your Privacy</h2>
+        <p>
+          At Hot Baked Apps, we believe your privacy is a fundamental right. 
+          <strong>{app.name}</strong> was designed with privacy as a core principle.
+        </p>
+
+        <h2>Data Collection</h2>
+        <p>
+          <strong>{app.name}</strong> does not collect, store, or transmit any personal data. 
+          We do not:
+        </p>
+        <ul>
+          <li>Collect personal information</li>
+          <li>Track your location</li>
+          <li>Access your contacts, photos, or files</li>
+          <li>Use analytics or tracking tools</li>
+          <li>Share any data with third parties</li>
+        </ul>
+
+        <h2>No Account Required</h2>
+        <p>
+          <strong>{app.name}</strong> does not require you to create an account or provide 
+          any personal information to use the app.
+        </p>
+
+        <h2>Third-Party Services</h2>
+        <p>
+          <strong>{app.name}</strong> does not integrate with any third-party services that 
+          would collect your data.
+        </p>
+
+        <h2>Data Storage</h2>
+        <p>
+          All app data is stored locally on your device. We have no access to this data, 
+          and it never leaves your device.
+        </p>
+
+        <h2>Children's Privacy</h2>
+        <p>
+          Since we don't collect any data, <strong>{app.name}</strong> is safe for users 
+          of all ages. We comply with COPPA (Children's Online Privacy Protection Act) 
+          by design.
+        </p>
+
+        <h2>Changes to This Policy</h2>
+        <p>
+          If we ever change our privacy practices, we will update this page and the 
+          "Last Updated" date above. Any changes will maintain our commitment to not 
+          collecting your personal data.
+        </p>
+
+        <h2>Contact Us</h2>
+        <p>
+          If you have any questions about this privacy policy, please contact us at:
+        </p>
+        <p>
+          <a href="mailto:support@hotbakedapps.com">support@hotbakedapps.com</a>
+        </p>
+      </section>
+
+      <footer class="legal-footer">
+        <a href="/" class="back-link">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+          </svg>
+          <span>Back to Home</span>
+        </a>
+      </footer>
+    </div>
+  </article>
+</Layout>
+
+<style>
+  .legal-page {
+    padding: 4rem 2rem;
+    min-height: calc(100vh - 80px);
+  }
+
+  .legal-container {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .legal-header {
+    text-align: center;
+    margin-bottom: 4rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid rgba(245, 158, 11, 0.15);
+  }
+
+  .legal-icon {
+    font-size: 4rem;
+    display: block;
+    margin-bottom: 1.5rem;
+    filter: drop-shadow(0 4px 12px rgba(245, 158, 11, 0.3));
+  }
+
+  .legal-header h1 {
+    font-size: 2.5rem;
+    margin: 0 0 0.5rem;
+    background: linear-gradient(135deg, var(--color-accent), #FBBF24);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .legal-app-name {
+    font-size: 1.25rem;
+    color: var(--color-text);
+    margin: 0 0 0.5rem;
+    font-weight: 500;
+  }
+
+  .legal-date {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    margin: 0;
+  }
+
+  .legal-content {
+    line-height: 1.8;
+  }
+
+  .legal-content h2 {
+    font-size: 1.5rem;
+    margin: 2.5rem 0 1rem;
+    color: var(--color-text);
+  }
+
+  .legal-content h2:first-child {
+    margin-top: 0;
+  }
+
+  .legal-content p {
+    color: var(--color-text-muted);
+    margin: 0 0 1rem;
+  }
+
+  .legal-content ul {
+    color: var(--color-text-muted);
+    margin: 1rem 0;
+    padding-left: 1.5rem;
+  }
+
+  .legal-content li {
+    margin: 0.5rem 0;
+  }
+
+  .legal-content a {
+    color: var(--color-accent);
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+
+  .legal-content a:hover {
+    opacity: 0.8;
+    text-decoration: underline;
+  }
+
+  .legal-content strong {
+    color: var(--color-text);
+  }
+
+  .legal-footer {
+    margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(245, 158, 11, 0.15);
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--color-text-muted);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+
+  .back-link:hover {
+    color: var(--color-accent);
+  }
+
+  @media (max-width: 768px) {
+    .legal-page {
+      padding: 2rem 1.5rem;
+    }
+
+    .legal-header h1 {
+      font-size: 2rem;
+    }
+  }
+</style>

@@ -1,0 +1,22 @@
+[
+  {
+    "slug": "undercover-spy",
+    "name": "Undercover Spy",
+    "tagline": "Become the ultimate secret agent",
+    "description": "Immerse yourself in thrilling espionage missions. Decode messages, track targets, and complete covert operations in this action-packed spy adventure.",
+    "status": "dev",
+    "appStoreUrl": null,
+    "icon": "🕵️‍♂️",
+    "releaseDate": "2026-03-01"
+  },
+  {
+    "slug": "zombie-run",
+    "name": "Zombie Run",
+    "tagline": "Run for your life. Literally.",
+    "description": "The undead are rising and you're their next meal. Sprint through post-apocalyptic landscapes, gather supplies, and survive the zombie horde in this intense runner.",
+    "status": "concept",
+    "appStoreUrl": null,
+    "icon": "🧟",
+    "releaseDate": null
+  }
+]

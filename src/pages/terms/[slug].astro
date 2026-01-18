@@ -1,0 +1,258 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import apps from '../../data/apps.json';
+
+export function getStaticPaths() {
+  // Generate pages for each app plus a studio-wide policy
+  const appPaths = apps.map((app) => ({
+    params: { slug: app.slug },
+    props: { app }
+  }));
+  
+  // Add studio-wide terms
+  appPaths.push({
+    params: { slug: 'studio' },
+    props: { 
+      app: {
+        name: 'Hot Baked Apps',
+        slug: 'studio',
+        tagline: 'Studio Terms of Service',
+        description: '',
+        status: 'live',
+        appStoreUrl: null,
+        icon: '🔥',
+        releaseDate: null
+      }
+    }
+  });
+  
+  return appPaths;
+}
+
+const { app } = Astro.props;
+---
+
+<Layout 
+  title={`Terms of Service - ${app.name} | Hot Baked Apps`}
+  description={`Terms of service for ${app.name}. Read our usage terms and conditions.`}
+  canonicalPath={`/terms/${app.slug}`}
+>
+  <article class="legal-page">
+    <div class="legal-container">
+      <header class="legal-header">
+        <span class="legal-icon">{app.icon}</span>
+        <h1>Terms of Service</h1>
+        <p class="legal-app-name">{app.name}</p>
+        <p class="legal-date">Last Updated: January 2026</p>
+      </header>
+
+      <section class="legal-content">
+        <h2>Agreement to Terms</h2>
+        <p>
+          By downloading, installing, or using <strong>{app.name}</strong>, you agree 
+          to be bound by these Terms of Service. If you do not agree to these terms, 
+          please do not use the app.
+        </p>
+
+        <h2>License Grant</h2>
+        <p>
+          Hot Baked Apps grants you a limited, non-exclusive, non-transferable, 
+          revocable license to use <strong>{app.name}</strong> for personal, 
+          non-commercial purposes in accordance with these terms.
+        </p>
+
+        <h2>Restrictions</h2>
+        <p>You agree not to:</p>
+        <ul>
+          <li>Copy, modify, or distribute the app</li>
+          <li>Reverse engineer, decompile, or disassemble the app</li>
+          <li>Remove any proprietary notices or labels</li>
+          <li>Use the app for any unlawful purpose</li>
+          <li>Attempt to gain unauthorized access to any systems</li>
+        </ul>
+
+        <h2>Intellectual Property</h2>
+        <p>
+          <strong>{app.name}</strong> and all its contents, features, and functionality 
+          are owned by Hot Baked Apps and are protected by international copyright, 
+          trademark, and other intellectual property laws.
+        </p>
+
+        <h2>Disclaimer of Warranties</h2>
+        <p>
+          <strong>{app.name}</strong> is provided "as is" and "as available" without 
+          any warranties of any kind, either express or implied. We do not warrant that 
+          the app will be uninterrupted, error-free, or free of viruses or other harmful 
+          components.
+        </p>
+
+        <h2>Limitation of Liability</h2>
+        <p>
+          To the fullest extent permitted by law, Hot Baked Apps shall not be liable 
+          for any indirect, incidental, special, consequential, or punitive damages 
+          arising out of or relating to your use of <strong>{app.name}</strong>.
+        </p>
+
+        <h2>Changes to the App</h2>
+        <p>
+          We reserve the right to modify, suspend, or discontinue <strong>{app.name}</strong> 
+          at any time without notice. We will not be liable to you or any third party 
+          for any modification, suspension, or discontinuation.
+        </p>
+
+        <h2>Updates to Terms</h2>
+        <p>
+          We may update these Terms of Service from time to time. The updated version 
+          will be indicated by an updated "Last Updated" date. Your continued use of 
+          <strong>{app.name}</strong> after any changes constitutes acceptance of the 
+          new terms.
+        </p>
+
+        <h2>Governing Law</h2>
+        <p>
+          These terms shall be governed by and construed in accordance with applicable 
+          laws, without regard to conflict of law principles.
+        </p>
+
+        <h2>Contact Us</h2>
+        <p>
+          If you have any questions about these Terms of Service, please contact us at:
+        </p>
+        <p>
+          <a href="mailto:support@hotbakedapps.com">support@hotbakedapps.com</a>
+        </p>
+      </section>
+
+      <footer class="legal-footer">
+        <a href="/" class="back-link">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+          </svg>
+          <span>Back to Home</span>
+        </a>
+      </footer>
+    </div>
+  </article>
+</Layout>
+
+<style>
+  .legal-page {
+    padding: 4rem 2rem;
+    min-height: calc(100vh - 80px);
+  }
+
+  .legal-container {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .legal-header {
+    text-align: center;
+    margin-bottom: 4rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid rgba(245, 158, 11, 0.15);
+  }
+
+  .legal-icon {
+    font-size: 4rem;
+    display: block;
+    margin-bottom: 1.5rem;
+    filter: drop-shadow(0 4px 12px rgba(245, 158, 11, 0.3));
+  }
+
+  .legal-header h1 {
+    font-size: 2.5rem;
+    margin: 0 0 0.5rem;
+    background: linear-gradient(135deg, var(--color-accent), #FBBF24);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .legal-app-name {
+    font-size: 1.25rem;
+    color: var(--color-text);
+    margin: 0 0 0.5rem;
+    font-weight: 500;
+  }
+
+  .legal-date {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    margin: 0;
+  }
+
+  .legal-content {
+    line-height: 1.8;
+  }
+
+  .legal-content h2 {
+    font-size: 1.5rem;
+    margin: 2.5rem 0 1rem;
+    color: var(--color-text);
+  }
+
+  .legal-content h2:first-child {
+    margin-top: 0;
+  }
+
+  .legal-content p {
+    color: var(--color-text-muted);
+    margin: 0 0 1rem;
+  }
+
+  .legal-content ul {
+    color: var(--color-text-muted);
+    margin: 1rem 0;
+    padding-left: 1.5rem;
+  }
+
+  .legal-content li {
+    margin: 0.5rem 0;
+  }
+
+  .legal-content a {
+    color: var(--color-accent);
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+
+  .legal-content a:hover {
+    opacity: 0.8;
+    text-decoration: underline;
+  }
+
+  .legal-content strong {
+    color: var(--color-text);
+  }
+
+  .legal-footer {
+    margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(245, 158, 11, 0.15);
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--color-text-muted);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+
+  .back-link:hover {
+    color: var(--color-accent);
+  }
+
+  @media (max-width: 768px) {
+    .legal-page {
+      padding: 2rem 1.5rem;
+    }
+
+    .legal-header h1 {
+      font-size: 2rem;
+    }
+  }
+</style>

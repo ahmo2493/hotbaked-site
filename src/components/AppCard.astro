@@ -1,0 +1,193 @@
+---
+interface Props {
+  slug: string;
+  name: string;
+  tagline: string;
+  status: 'live' | 'dev' | 'concept';
+  appStoreUrl: string | null;
+  icon: string;
+}
+
+const { slug, name, tagline, status, appStoreUrl, icon } = Astro.props;
+
+const statusLabels = {
+  live: 'Available Now',
+  dev: 'In Development',
+  concept: 'Coming Soon'
+};
+
+const statusColors = {
+  live: '#22C55E',
+  dev: '#F59E0B',
+  concept: '#8B5CF6'
+};
+---
+
+<article class="app-card">
+  <div class="card-glow"></div>
+  <div class="card-content">
+    <div class="app-icon">{icon}</div>
+    <div class="app-info">
+      <h3 class="app-name">{name}</h3>
+      <p class="app-tagline">{tagline}</p>
+    </div>
+    <div class="app-meta">
+      <span class="status-badge" style={`--status-color: ${statusColors[status]}`}>
+        {statusLabels[status]}
+      </span>
+    </div>
+    <div class="app-actions">
+      {appStoreUrl ? (
+        <a href={appStoreUrl} class="btn btn-primary" target="_blank" rel="noopener">
+          <span>App Store</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M7 17L17 7M17 7H7M17 7V17"/>
+          </svg>
+        </a>
+      ) : (
+        <span class="btn btn-disabled">Coming Soon</span>
+      )}
+      <a href={`/privacy/${slug}`} class="link-subtle">Privacy</a>
+      <a href={`/terms/${slug}`} class="link-subtle">Terms</a>
+    </div>
+  </div>
+</article>
+
+<style>
+  .app-card {
+    position: relative;
+    background: linear-gradient(145deg, rgba(26, 26, 26, 0.8), rgba(13, 13, 13, 0.9));
+    border: 1px solid rgba(245, 158, 11, 0.15);
+    border-radius: 20px;
+    padding: 2rem;
+    overflow: hidden;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+  }
+
+  .app-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(245, 158, 11, 0.35);
+  }
+
+  .card-glow {
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at center, rgba(245, 158, 11, 0.08) 0%, transparent 50%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+  }
+
+  .app-card:hover .card-glow {
+    opacity: 1;
+  }
+
+  .card-content {
+    position: relative;
+    z-index: 1;
+  }
+
+  .app-icon {
+    font-size: 4rem;
+    margin-bottom: 1.5rem;
+    filter: drop-shadow(0 4px 12px rgba(245, 158, 11, 0.25));
+  }
+
+  .app-name {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin: 0 0 0.5rem;
+  }
+
+  .app-tagline {
+    color: var(--color-text-muted);
+    font-size: 1rem;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  .app-meta {
+    margin: 1.25rem 0;
+  }
+
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.9rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--status-color);
+    border-radius: 20px;
+    color: var(--status-color);
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .status-badge::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: var(--status-color);
+    border-radius: 50%;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  .app-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.7rem 1.25rem;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--color-accent), #FBBF24);
+    color: white;
+  }
+
+  .btn-primary:hover {
+    transform: scale(1.03);
+    box-shadow: 0 4px 20px rgba(245, 158, 11, 0.35);
+  }
+
+  .btn-disabled {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--color-text-muted);
+    cursor: default;
+  }
+
+  .link-subtle {
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .link-subtle:hover {
+    color: var(--color-accent);
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+</style>
