@@ -5,7 +5,6 @@ import apps from '../data/apps.json';
 // Get app from URL query parameter
 const appParam = Astro.url.searchParams.get('app');
 const selectedApp = apps.find(a => a.name === appParam);
-const defaultSubject = selectedApp ? `Support: ${selectedApp.name}` : 'Support Request';
 ---
 
 <Layout 
@@ -23,59 +22,88 @@ const defaultSubject = selectedApp ? `Support: ${selectedApp.name}` : 'Support R
         </p>
       </header>
 
-      <div class="support-content">
-        <div class="contact-card">
-          <div class="card-icon">📧</div>
-          <h2>Email Support</h2>
-          <p>Send us an email and we'll get back to you as soon as possible.</p>
-          <a 
-            href={`mailto:support@hotbakedapps.com?subject=${encodeURIComponent(defaultSubject)}`} 
-            class="contact-btn"
-            id="email-link"
-          >
-            <span>support@hotbakedapps.com</span>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M7 17L17 7M17 7H7M17 7V17"/>
-            </svg>
-          </a>
+      <form 
+        id="support-form" 
+        class="support-form"
+        action="https://api.web3forms.com/submit" 
+        method="POST"
+      >
+        <input type="hidden" name="access_key" value="4ad3e884-5a01-45a8-9327-62e267ab9e5b" />
+        <input type="hidden" name="subject" id="form-subject" value="Support Request" />
+        <input type="hidden" name="from_name" value="Hot Baked Apps Support Form" />
+        <input type="checkbox" name="botcheck" class="hidden" style="display: none;" />
+
+        <div class="form-group">
+          <label for="request-type">What can we help with?</label>
+          <div class="select-wrapper">
+            <select name="request_type" id="request-type" required>
+              <option value="">Select a topic...</option>
+              <option value="support">General Support</option>
+              <option value="bug">Report a Bug 🐛</option>
+              <option value="feature">Feature Request 💡</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
         </div>
 
-        <div class="contact-card">
-          <div class="card-icon">🐛</div>
-          <h2>Report a Bug</h2>
-          <p>Found something not working right? Let us know so we can fix it.</p>
-          <a 
-            href={`mailto:support@hotbakedapps.com?subject=${encodeURIComponent(selectedApp ? `Bug Report: ${selectedApp.name}` : 'Bug Report')}`}
-            class="contact-btn"
-          >
-            <span>support@hotbakedapps.com</span>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M7 17L17 7M17 7H7M17 7V17"/>
-            </svg>
-          </a>
+        <div class="form-group">
+          <label for="app-select">Which app is this about?</label>
+          <div class="select-wrapper">
+            <select name="app" id="app-select">
+              <option value="General">General / Not app-specific</option>
+              {apps.map((app) => (
+                <option value={app.name} selected={selectedApp?.slug === app.slug}>
+                  {app.icon} {app.name}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
-        <div class="contact-card">
-          <div class="card-icon">💡</div>
-          <h2>Feature Request</h2>
-          <p>Have an idea to make our apps better? We'd love to hear it!</p>
-          <a 
-            href={`mailto:support@hotbakedapps.com?subject=${encodeURIComponent(selectedApp ? `Feature Request: ${selectedApp.name}` : 'Feature Request')}`}
-            class="contact-btn"
-          >
-            <span>support@hotbakedapps.com</span>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M7 17L17 7M17 7H7M17 7V17"/>
-            </svg>
-          </a>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="name">Your Name</label>
+            <input type="text" name="name" id="name" placeholder="John Doe" required />
+          </div>
+
+          <div class="form-group">
+            <label for="email">Your Email</label>
+            <input type="email" name="email" id="email" placeholder="john@example.com" required />
+          </div>
         </div>
+
+        <div class="form-group">
+          <label for="message">Message</label>
+          <textarea 
+            name="message" 
+            id="message" 
+            rows="5" 
+            placeholder="Please describe your issue or request in detail..."
+            required
+          ></textarea>
+        </div>
+
+        <button type="submit" class="submit-btn">
+          <span class="btn-text">Send Message</span>
+          <span class="btn-loading">Sending...</span>
+          <svg class="btn-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+          </svg>
+        </button>
+      </form>
+
+      <div id="success-message" class="success-message hidden">
+        <div class="success-icon">✅</div>
+        <h2>Message Sent!</h2>
+        <p>Thanks for reaching out. We'll get back to you as soon as possible.</p>
+        <button onclick="resetForm()" class="reset-btn">Send Another Message</button>
       </div>
 
       {selectedApp && (
         <div class="app-context">
           <p>
             <span class="app-context-icon">{selectedApp.icon}</span>
-            You're contacting us about <strong>{selectedApp.name}</strong>
+            Contacting support about <strong>{selectedApp.name}</strong>
           </p>
         </div>
       )}
@@ -132,19 +160,60 @@ const defaultSubject = selectedApp ? `Support: ${selectedApp.name}` : 'Support R
 </Layout>
 
 <script>
-  // Client-side: Update mailto links if URL has ?app= parameter
-  document.addEventListener('DOMContentLoaded', () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const appName = urlParams.get('app');
+  const form = document.getElementById('support-form') as HTMLFormElement;
+  const successMessage = document.getElementById('success-message');
+  const requestType = document.getElementById('request-type') as HTMLSelectElement;
+  const appSelect = document.getElementById('app-select') as HTMLSelectElement;
+  const formSubject = document.getElementById('form-subject') as HTMLInputElement;
+  const submitBtn = form?.querySelector('.submit-btn');
+
+  // Update subject based on selections
+  function updateSubject() {
+    const typeLabels: Record<string, string> = {
+      'support': 'Support Request',
+      'bug': 'Bug Report',
+      'feature': 'Feature Request',
+      'other': 'Inquiry'
+    };
+    const type = typeLabels[requestType.value] || 'Support Request';
+    const app = appSelect.value !== 'General' ? ` - ${appSelect.value}` : '';
+    formSubject.value = `${type}${app}`;
+  }
+
+  requestType?.addEventListener('change', updateSubject);
+  appSelect?.addEventListener('change', updateSubject);
+
+  // Handle form submission
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
     
-    if (appName) {
-      const emailLink = document.getElementById('email-link');
-      if (emailLink) {
-        const subject = encodeURIComponent(`Support: ${appName}`);
-        emailLink.setAttribute('href', `mailto:support@hotbakedapps.com?subject=${subject}`);
+    submitBtn?.classList.add('loading');
+    
+    try {
+      const response = await fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form)
+      });
+      
+      if (response.ok) {
+        form.classList.add('hidden');
+        successMessage?.classList.remove('hidden');
+      } else {
+        throw new Error('Form submission failed');
       }
+    } catch (error) {
+      alert('Something went wrong. Please try again.');
+    } finally {
+      submitBtn?.classList.remove('loading');
     }
   });
+
+  // Reset form function
+  (window as any).resetForm = () => {
+    form.reset();
+    form.classList.remove('hidden');
+    successMessage?.classList.add('hidden');
+  };
 </script>
 
 <style>
@@ -154,13 +223,13 @@ const defaultSubject = selectedApp ? `Support: ${selectedApp.name}` : 'Support R
   }
 
   .support-container {
-    max-width: 900px;
+    max-width: 700px;
     margin: 0 auto;
   }
 
   .support-header {
     text-align: center;
-    margin-bottom: 4rem;
+    margin-bottom: 3rem;
   }
 
   .support-icon {
@@ -181,64 +250,181 @@ const defaultSubject = selectedApp ? `Support: ${selectedApp.name}` : 'Support R
     margin: 0 auto;
   }
 
-  .support-content {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 3rem;
-  }
-
-  .contact-card {
+  /* Form Styles */
+  .support-form {
     background: linear-gradient(145deg, rgba(26, 26, 26, 0.8), rgba(13, 13, 13, 0.9));
     border: 1px solid rgba(245, 158, 11, 0.15);
-    border-radius: 16px;
-    padding: 2rem;
-    transition: border-color 0.3s ease, transform 0.3s ease;
+    border-radius: 20px;
+    padding: 2.5rem;
+    margin-bottom: 2rem;
   }
 
-  .contact-card:hover {
-    border-color: rgba(245, 158, 11, 0.35);
-    transform: translateY(-4px);
+  .support-form.hidden {
+    display: none;
   }
 
-  .card-icon {
-    font-size: 2.5rem;
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  label {
+    display: block;
+    color: var(--color-text);
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+  }
+
+  input[type="text"],
+  input[type="email"],
+  textarea,
+  select {
+    width: 100%;
+    padding: 0.9rem 1rem;
+    background: rgba(13, 13, 13, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    color: var(--color-text);
+    font-size: 1rem;
+    font-family: inherit;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  input[type="text"]:focus,
+  input[type="email"]:focus,
+  textarea:focus,
+  select:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--color-text-muted);
+    opacity: 0.6;
+  }
+
+  .select-wrapper {
+    position: relative;
+  }
+
+  .select-wrapper::after {
+    content: '▼';
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-text-muted);
+    font-size: 0.7rem;
+    pointer-events: none;
+  }
+
+  select {
+    appearance: none;
+    cursor: pointer;
+    padding-right: 2.5rem;
+  }
+
+  select option {
+    background: var(--color-bg);
+    color: var(--color-text);
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 120px;
+  }
+
+  .submit-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, var(--color-accent), #FBBF24);
+    color: #0D0D0D;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 20px rgba(245, 158, 11, 0.3);
+  }
+
+  .submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(245, 158, 11, 0.4);
+  }
+
+  .submit-btn .btn-loading {
+    display: none;
+  }
+
+  .submit-btn.loading .btn-text,
+  .submit-btn.loading .btn-icon {
+    display: none;
+  }
+
+  .submit-btn.loading .btn-loading {
+    display: inline;
+  }
+
+  /* Success Message */
+  .success-message {
+    text-align: center;
+    padding: 3rem;
+    background: linear-gradient(145deg, rgba(26, 26, 26, 0.8), rgba(13, 13, 13, 0.9));
+    border: 1px solid rgba(34, 197, 94, 0.3);
+    border-radius: 20px;
+    margin-bottom: 2rem;
+  }
+
+  .success-message.hidden {
+    display: none;
+  }
+
+  .success-icon {
+    font-size: 4rem;
     margin-bottom: 1rem;
   }
 
-  .contact-card h2 {
-    font-size: 1.25rem;
+  .success-message h2 {
+    font-size: 1.75rem;
     margin: 0 0 0.75rem;
+    color: #22C55E;
   }
 
-  .contact-card p {
+  .success-message p {
     color: var(--color-text-muted);
-    font-size: 0.95rem;
     margin: 0 0 1.5rem;
-    line-height: 1.6;
   }
 
-  .contact-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1.25rem;
-    background: rgba(245, 158, 11, 0.1);
-    border: 1px solid rgba(245, 158, 11, 0.3);
-    border-radius: 10px;
+  .reset-btn {
+    padding: 0.75rem 1.5rem;
+    background: transparent;
+    border: 1px solid var(--color-accent);
     color: var(--color-accent);
-    text-decoration: none;
-    font-size: 0.9rem;
+    border-radius: 10px;
     font-weight: 500;
-    transition: all 0.2s ease;
+    cursor: pointer;
+    transition: all 0.2s;
   }
 
-  .contact-btn:hover {
+  .reset-btn:hover {
     background: var(--color-accent);
-    color: white;
-    border-color: var(--color-accent);
+    color: #0D0D0D;
   }
 
+  /* App Context */
   .app-context {
     background: rgba(245, 158, 11, 0.08);
     border: 1px solid rgba(245, 158, 11, 0.2);
@@ -265,6 +451,7 @@ const defaultSubject = selectedApp ? `Support: ${selectedApp.name}` : 'Support R
     color: var(--color-accent);
   }
 
+  /* FAQ Section */
   .faq-section {
     margin-top: 4rem;
     padding-top: 3rem;
@@ -358,8 +545,12 @@ const defaultSubject = selectedApp ? `Support: ${selectedApp.name}` : 'Support R
       font-size: 2rem;
     }
 
-    .contact-card {
+    .support-form {
       padding: 1.5rem;
+    }
+
+    .form-row {
+      grid-template-columns: 1fr;
     }
   }
 </style>

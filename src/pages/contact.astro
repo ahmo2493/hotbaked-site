@@ -1,0 +1,464 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout 
+  title="Contact Us | Hot Baked Apps"
+  description="Get in touch with Hot Baked Apps. We'd love to hear from you about partnerships, press inquiries, or just to say hello."
+  canonicalPath="/contact"
+>
+  <section class="contact-page">
+    <div class="contact-container">
+      <header class="contact-header">
+        <span class="contact-icon">👋</span>
+        <h1>Get in Touch</h1>
+        <p class="contact-subtitle">
+          Have a question, partnership idea, or just want to say hello? 
+          We'd love to hear from you.
+        </p>
+      </header>
+
+      <div class="contact-grid">
+        <form 
+          id="contact-form" 
+          class="contact-form"
+          action="https://api.web3forms.com/submit" 
+          method="POST"
+        >
+          <input type="hidden" name="access_key" value="4ad3e884-5a01-45a8-9327-62e267ab9e5b" />
+          <input type="hidden" name="subject" value="New Contact Form Submission" />
+          <input type="hidden" name="from_name" value="Hot Baked Apps Contact Form" />
+          <input type="checkbox" name="botcheck" class="hidden" style="display: none;" />
+
+          <div class="form-group">
+            <label for="name">Your Name</label>
+            <input type="text" name="name" id="name" placeholder="John Doe" required />
+          </div>
+
+          <div class="form-group">
+            <label for="email">Your Email</label>
+            <input type="email" name="email" id="email" placeholder="john@example.com" required />
+          </div>
+
+          <div class="form-group">
+            <label for="inquiry-type">What's this about?</label>
+            <div class="select-wrapper">
+              <select name="inquiry_type" id="inquiry-type">
+                <option value="General Inquiry">General Inquiry</option>
+                <option value="Partnership">Partnership Opportunity</option>
+                <option value="Press">Press / Media</option>
+                <option value="Careers">Careers</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="message">Message</label>
+            <textarea 
+              name="message" 
+              id="message" 
+              rows="5" 
+              placeholder="Tell us what's on your mind..."
+              required
+            ></textarea>
+          </div>
+
+          <button type="submit" class="submit-btn">
+            <span class="btn-text">Send Message</span>
+            <span class="btn-loading">Sending...</span>
+            <svg class="btn-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+            </svg>
+          </button>
+        </form>
+
+        <div id="success-message" class="success-message hidden">
+          <div class="success-icon">✅</div>
+          <h2>Message Sent!</h2>
+          <p>Thanks for reaching out. We'll get back to you soon.</p>
+          <button onclick="resetForm()" class="reset-btn">Send Another Message</button>
+        </div>
+
+        <aside class="contact-info">
+          <div class="info-card">
+            <div class="info-icon">🔥</div>
+            <h3>Hot Baked Apps</h3>
+            <p>Freshly coded mobile experiences, baked to perfection.</p>
+          </div>
+
+          <div class="info-card">
+            <div class="info-icon">💬</div>
+            <h3>Need App Support?</h3>
+            <p>For help with our apps, bug reports, or feature requests, please visit our dedicated support page.</p>
+            <a href="/support" class="info-link">Go to Support →</a>
+          </div>
+
+          <div class="info-card">
+            <div class="info-icon">⏱️</div>
+            <h3>Response Time</h3>
+            <p>We typically respond within 1-2 business days. Thanks for your patience!</p>
+          </div>
+        </aside>
+      </div>
+
+      <footer class="contact-footer">
+        <a href="/" class="back-link">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+          </svg>
+          <span>Back to Home</span>
+        </a>
+      </footer>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  const form = document.getElementById('contact-form') as HTMLFormElement;
+  const successMessage = document.getElementById('success-message');
+  const submitBtn = form?.querySelector('.submit-btn');
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    submitBtn?.classList.add('loading');
+    
+    try {
+      const response = await fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form)
+      });
+      
+      if (response.ok) {
+        form.classList.add('hidden');
+        successMessage?.classList.remove('hidden');
+      } else {
+        throw new Error('Form submission failed');
+      }
+    } catch (error) {
+      alert('Something went wrong. Please try again.');
+    } finally {
+      submitBtn?.classList.remove('loading');
+    }
+  });
+
+  (window as any).resetForm = () => {
+    form.reset();
+    form.classList.remove('hidden');
+    successMessage?.classList.add('hidden');
+  };
+</script>
+
+<style>
+  .contact-page {
+    padding: 4rem 2rem;
+    min-height: calc(100vh - 80px);
+  }
+
+  .contact-container {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .contact-header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .contact-icon {
+    font-size: 4rem;
+    display: block;
+    margin-bottom: 1.5rem;
+  }
+
+  .contact-header h1 {
+    font-size: 2.5rem;
+    margin: 0 0 1rem;
+  }
+
+  .contact-subtitle {
+    color: var(--color-text-muted);
+    font-size: 1.1rem;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 2rem;
+    align-items: start;
+  }
+
+  /* Form Styles */
+  .contact-form {
+    background: linear-gradient(145deg, rgba(26, 26, 26, 0.8), rgba(13, 13, 13, 0.9));
+    border: 1px solid rgba(245, 158, 11, 0.15);
+    border-radius: 20px;
+    padding: 2.5rem;
+  }
+
+  .contact-form.hidden {
+    display: none;
+  }
+
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+
+  label {
+    display: block;
+    color: var(--color-text);
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+  }
+
+  input[type="text"],
+  input[type="email"],
+  textarea,
+  select {
+    width: 100%;
+    padding: 0.9rem 1rem;
+    background: rgba(13, 13, 13, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    color: var(--color-text);
+    font-size: 1rem;
+    font-family: inherit;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  input[type="text"]:focus,
+  input[type="email"]:focus,
+  textarea:focus,
+  select:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--color-text-muted);
+    opacity: 0.6;
+  }
+
+  .select-wrapper {
+    position: relative;
+  }
+
+  .select-wrapper::after {
+    content: '▼';
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-text-muted);
+    font-size: 0.7rem;
+    pointer-events: none;
+  }
+
+  select {
+    appearance: none;
+    cursor: pointer;
+    padding-right: 2.5rem;
+  }
+
+  select option {
+    background: var(--color-bg);
+    color: var(--color-text);
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 120px;
+  }
+
+  .submit-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, var(--color-accent), #FBBF24);
+    color: #0D0D0D;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 20px rgba(245, 158, 11, 0.3);
+  }
+
+  .submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(245, 158, 11, 0.4);
+  }
+
+  .submit-btn .btn-loading {
+    display: none;
+  }
+
+  .submit-btn.loading .btn-text,
+  .submit-btn.loading .btn-icon {
+    display: none;
+  }
+
+  .submit-btn.loading .btn-loading {
+    display: inline;
+  }
+
+  /* Success Message */
+  .success-message {
+    text-align: center;
+    padding: 3rem;
+    background: linear-gradient(145deg, rgba(26, 26, 26, 0.8), rgba(13, 13, 13, 0.9));
+    border: 1px solid rgba(34, 197, 94, 0.3);
+    border-radius: 20px;
+  }
+
+  .success-message.hidden {
+    display: none;
+  }
+
+  .success-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+  }
+
+  .success-message h2 {
+    font-size: 1.75rem;
+    margin: 0 0 0.75rem;
+    color: #22C55E;
+  }
+
+  .success-message p {
+    color: var(--color-text-muted);
+    margin: 0 0 1.5rem;
+  }
+
+  .reset-btn {
+    padding: 0.75rem 1.5rem;
+    background: transparent;
+    border: 1px solid var(--color-accent);
+    color: var(--color-accent);
+    border-radius: 10px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .reset-btn:hover {
+    background: var(--color-accent);
+    color: #0D0D0D;
+  }
+
+  /* Sidebar Info */
+  .contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .info-card {
+    background: rgba(26, 26, 26, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    padding: 1.5rem;
+  }
+
+  .info-icon {
+    font-size: 2rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .info-card h3 {
+    font-size: 1.1rem;
+    margin: 0 0 0.5rem;
+    color: var(--color-text);
+  }
+
+  .info-card p {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .info-link {
+    display: inline-block;
+    margin-top: 0.75rem;
+    color: var(--color-accent);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: opacity 0.2s;
+  }
+
+  .info-link:hover {
+    opacity: 0.8;
+  }
+
+  .contact-footer {
+    margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(245, 158, 11, 0.15);
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--color-text-muted);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+
+  .back-link:hover {
+    color: var(--color-accent);
+  }
+
+  @media (max-width: 900px) {
+    .contact-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .contact-info {
+      order: -1;
+      flex-direction: row;
+      flex-wrap: wrap;
+    }
+
+    .info-card {
+      flex: 1;
+      min-width: 200px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .contact-page {
+      padding: 2rem 1.5rem;
+    }
+
+    .contact-header h1 {
+      font-size: 2rem;
+    }
+
+    .contact-form {
+      padding: 1.5rem;
+    }
+
+    .contact-info {
+      flex-direction: column;
+    }
+
+    .info-card {
+      min-width: auto;
+    }
+  }
+</style>
